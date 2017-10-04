@@ -1,0 +1,63 @@
+<div class="main">
+  <div class="ui centered grid">
+    <div class="row">
+      <div class="column">
+        <div class="centered row">
+          <h4 class="ui header">Create new account</h4>
+
+          <form [formGroup]="form" class="ui form">
+            <div [class.error]="username.touched && username.invalid" class="field">
+              <label for="username">Username</label>
+              <input formControlName="username"
+                     id="username"
+                     type="text"
+                     tabindex="1">
+              <div *ngIf="username.touched && username.invalid" class="ui pointing red basic label">
+                <span *ngIf="username.errors.required">
+                  Username is required.
+                </span>
+                <span *ngIf="username.errors.minlength">
+                  Username should contains at least {{ username.errors.minlength.requiredLength }} symbols.
+                </span>
+              </div>
+            </div>
+
+            <div [class.error]="true" class="field">
+              <label for="email">Email</label>
+              <input formControlName="email"
+                     id="email"
+                     type="email"
+                     tabindex="2">
+
+            </div>
+            <div class="field">
+              <label for="phone">Phone</label>
+              <input formControlName="phone"
+                     id="phone"
+                     type="tel"
+                     tabindex="3">
+            </div>
+            <div class="field">
+              <label for="password">Password</label>
+              <input formControlName="password"
+                     id="password"
+                     type="password"
+                     tabindex="4">
+            </div>
+            <button class="megabtn ui fluid positive button" tabindex="5" [disabled]="form.invalid" data-content="Add users to your feed">Sign Up</button>
+
+          </form>
+
+        </div>
+
+      </div>
+    </div>
+    <div class="row">
+      <div class="ui centered grid">
+        <div class="center aligned segment">
+          Already have one? <a href="" tabindex="6">Sign In here.</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
