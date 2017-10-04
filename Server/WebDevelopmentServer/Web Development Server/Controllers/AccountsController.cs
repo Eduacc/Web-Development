@@ -6,6 +6,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web.Http;
 using Microsoft.AspNet.Identity;
+using Thinktecture.IdentityModel;
 using Web_Development_Server.Core;
 using Web_Development_Server.Models;
 
@@ -14,6 +15,16 @@ namespace Web_Development_Server.Controllers
     [RoutePrefix("api/accounts")]
     public class AccountsController : BaseApiController
     {
+
+        [Authorize]
+        [Route("user")]
+        public async Task<IHttpActionResult> GetUser()
+        {
+            var userName = User.Identity.GetUserName();
+            var user = await AppUserManager.FindByNameAsync(userName);
+            return Ok(this.TheModelFactory.Create(user));
+        }
+
         [Authorize(Roles = "Admin")]
         [Authorize]
         [Route("users")]
@@ -145,7 +156,8 @@ namespace Web_Development_Server.Controllers
             if (rolesNotExists.Any())
             {
 
-                ModelState.AddModelError("", string.Format("Roles '{0}' does not exixts in the system", string.Join(",", rolesNotExists)));
+                ModelState.AddModelError("",
+                    $"Roles '{string.Join(",", rolesNotExists)}' does not exixts in the system");
                 return BadRequest(ModelState);
             }
 
