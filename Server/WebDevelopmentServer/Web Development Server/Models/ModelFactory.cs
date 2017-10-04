@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Web;
 using System.Web.Http.Routing;
+using Microsoft.AspNet.Identity.EntityFramework;
 using Web_Development_Server.Core;
 
 namespace Web_Development_Server.Models
@@ -32,8 +33,24 @@ namespace Web_Development_Server.Models
                 Claims = _AppUserManager.GetClaimsAsync(appUser.Id).Result
             };
         }
+        public RoleReturnModel Create(IdentityRole appRole)
+        {
+
+            return new RoleReturnModel
+            {
+                Url = _UrlHelper.Link("GetRoleById", new { id = appRole.Id }),
+                Id = appRole.Id,
+                Name = appRole.Name
+            };
+        }
     }
 
+    public class RoleReturnModel
+    {
+        public string Url { get; set; }
+        public string Id { get; set; }
+        public string Name { get; set; }
+    }
     public class UserReturnModel
     {
         public string Url { get; set; }

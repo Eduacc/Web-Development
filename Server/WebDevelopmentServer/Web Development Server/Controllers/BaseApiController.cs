@@ -12,31 +12,19 @@ namespace Web_Development_Server.Controllers
     {
 
         private ModelFactory _modelFactory;
-        private ApplicationUserManager _AppUserManager = null;
+        private readonly ApplicationUserManager _appUserManager = null;
 
-        protected ApplicationUserManager AppUserManager
-        {
-            get
-            {
-                return _AppUserManager ?? Request.GetOwinContext().GetUserManager<ApplicationUserManager>();
-            }
-        }
+        private readonly ApplicationRoleManager _appRoleManager = null;
+
+        protected ApplicationRoleManager AppRoleManager => _appRoleManager ?? Request.GetOwinContext().GetUserManager<ApplicationRoleManager>();
+
+        protected ApplicationUserManager AppUserManager => _appUserManager ?? Request.GetOwinContext().GetUserManager<ApplicationUserManager>();
 
         public BaseApiController()
         {
         }
 
-        protected ModelFactory TheModelFactory
-        {
-            get
-            {
-                if (_modelFactory == null)
-                {
-                    _modelFactory = new ModelFactory(this.Request, this.AppUserManager);
-                }
-                return _modelFactory;
-            }
-        }
+        protected ModelFactory TheModelFactory => _modelFactory ?? (_modelFactory = new ModelFactory(this.Request, this.AppUserManager));
 
         protected IHttpActionResult GetErrorResult(IdentityResult result)
         {
@@ -45,26 +33,22 @@ namespace Web_Development_Server.Controllers
                 return InternalServerError();
             }
 
-            if (!result.Succeeded)
+            if (result.Succeeded) return null;
+            if (result.Errors != null)
             {
-                if (result.Errors != null)
+                foreach (string error in result.Errors)
                 {
-                    foreach (string error in result.Errors)
-                    {
-                        ModelState.AddModelError("", error);
-                    }
+                    ModelState.AddModelError("", error);
                 }
-
-                if (ModelState.IsValid)
-                {
-                    // No ModelState errors are available to send, so just return an empty BadRequest.
-                    return BadRequest();
-                }
-
-                return BadRequest(ModelState);
             }
 
-            return null;
+            if (ModelState.IsValid)
+            {
+                // No ModelState errors are available to send, so just return an empty BadRequest.
+                return BadRequest();
+            }
+
+            return BadRequest(ModelState);
         }
     }
 
