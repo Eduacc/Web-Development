@@ -23,9 +23,9 @@ namespace Web_Development_Server.Providers
         public override async Task GrantResourceOwnerCredentials(OAuthGrantResourceOwnerCredentialsContext context)
         {
 
-            var allowedOrigin = "*";
+           // var allowedOrigin = "*";
 
-            context.OwinContext.Response.Headers.Add("Access-Control-Allow-Origin", new[] { allowedOrigin });
+            //context.OwinContext.Response.Headers.Add("Access-Control-Allow-Origin", new[] { allowedOrigin, "http://localhost:4200" });
 
             var userManager = context.OwinContext.GetUserManager<ApplicationUserManager>();
 

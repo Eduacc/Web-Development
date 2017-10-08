@@ -23,7 +23,7 @@ namespace Web_Development_Server.Core
             appUserManager.PasswordValidator = new PasswordValidator
             {
                 RequiredLength = 6,
-                RequireNonLetterOrDigit = true,
+                RequireNonLetterOrDigit = false,
                 RequireDigit = false,
                 RequireLowercase = true,
                 RequireUppercase = true,

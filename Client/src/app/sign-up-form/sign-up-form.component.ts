@@ -1,5 +1,7 @@
 import {Component, OnInit, ViewEncapsulation} from '@angular/core';
 import {FormGroup, FormControl, Validators} from '@angular/forms';
+import {UsernameValidators} from "../common/validators/username.validators";
+import {AccountService} from "../services/account/account.service";
 
 @Component({
   selector: 'app-sign-up-form',
@@ -8,30 +10,53 @@ import {FormGroup, FormControl, Validators} from '@angular/forms';
 })
 export class SignUpFormComponent implements OnInit {
   form = new FormGroup({
-    username: new FormControl('', [Validators.required, Validators.minLength(6)]),
-    email: new FormControl('', [Validators.required]),
-    phone: new FormControl('', [Validators.required]),
-    password: new FormControl('', [Validators.required])
+    username: new FormControl('', [
+      Validators.required,
+      Validators.minLength(2),
+      Validators.pattern('\\w+'),
+      // UsernameValidators.shouldBeUnique
+    ]),
+    email: new FormControl('', [
+      Validators.required,
+      Validators.pattern('\\w+@\\w+\\.\\w+')
+    ]),
+    phone: new FormControl('', [
+      Validators.required,
+      Validators.pattern('(8|\\+7)-?(\\(\\d{3}\\)|\\d{3})-?\\d{3}-?\\d{2}-?\\d{2}')
+    ]),
+    password: new FormControl('', [
+      Validators.required,
+      Validators.minLength(8),
+      Validators.pattern('(\\w*[A-Z]\\w*[a-z]\\w*|\\w*[a-z]\\w*[A-Z]\\w*)')
+    ])
   });
 
-  get username(){
+
+
+  get username() {
     return this.form.get('username');
   }
-  get email(){
+
+  get email() {
     return this.form.get('email');
   }
-  get phone(){
+
+  get phone() {
     return this.form.get('phone');
   }
-  get password(){
+
+  get password() {
     return this.form.get('password');
   }
 
-  constructor() {
+  constructor(private accountService: AccountService) {
   }
 
   ngOnInit() {
   }
 
+  signUp(credentials) {
+    this.accountService.createUser(credentials);
+  }
 
 }

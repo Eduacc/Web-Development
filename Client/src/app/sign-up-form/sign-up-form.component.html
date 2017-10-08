@@ -5,46 +5,75 @@
         <div class="centered row">
           <h4 class="ui header">Create new account</h4>
 
-          <form [formGroup]="form" class="ui form">
-            <div [class.error]="username.touched && username.invalid" class="field">
-              <label for="username">Username</label>
+          <form [formGroup]="form" (ngSubmit)="signUp(form.value)" class="ui form" novalidate>
+            <div [class.error]="username.touched && username.dirty && username.invalid" class="field">
+              <label for="username">Username Checking...</label>
               <input formControlName="username"
                      id="username"
                      type="text"
                      tabindex="1">
-              <div *ngIf="username.touched && username.invalid" class="ui pointing red basic label">
+              <div *ngIf="username.touched && username.dirty && username.invalid" class="ui pointing red basic label">
                 <span *ngIf="username.errors.required">
                   Username is required.
                 </span>
                 <span *ngIf="username.errors.minlength">
                   Username should contains at least {{ username.errors.minlength.requiredLength }} symbols.
                 </span>
+                <span *ngIf="username.errors.pattern">
+                  Username can contains only word characters i.e. a-Z or 0-9.
+                </span>
+                {{username.errors | json}}
+                <span *ngIf="username.errors.shouldBeUnique">
+                  This username already exist.
+                </span>
               </div>
+
             </div>
 
-            <div [class.error]="true" class="field">
+            <div [class.error]="email.touched && email.dirty && email.invalid" class="field">
               <label for="email">Email</label>
               <input formControlName="email"
                      id="email"
                      type="email"
                      tabindex="2">
-
+              <div *ngIf="email.touched && email.dirty && email.invalid" class="ui pointing red basic label">
+                <span *ngIf="email.errors.pattern">
+                  Incorrect email (example: username@domain.com).
+                </span>
+              </div>
             </div>
-            <div class="field">
+
+            <div [class.error]="phone.touched && phone.dirty && phone.invalid" class="field">
               <label for="phone">Phone</label>
               <input formControlName="phone"
                      id="phone"
                      type="tel"
                      tabindex="3">
+              <div *ngIf="phone.touched && phone.dirty && phone.invalid" class="ui pointing red basic label">
+                <span *ngIf="phone.errors.pattern">
+                  Incorrect phone (example: 89054924121).
+                </span>
+              </div>
             </div>
-            <div class="field">
+            <div [class.error]="password.touched && password.dirty && password.invalid" class="field">
               <label for="password">Password</label>
               <input formControlName="password"
                      id="password"
                      type="password"
                      tabindex="4">
+              <div *ngIf="password.touched && password.dirty && password.invalid" class="ui pointing red basic label">
+
+              <span *ngIf="password.errors.minlength">
+                  Password should contains at least {{ password.errors.minlength.requiredLength }} symbols.
+                </span>
+                <span *ngIf="password.errors.pattern">
+                  Password must contains at least 1 uppercase and 1 lowercase character.
+                </span>
+              </div>
             </div>
-            <button class="megabtn ui fluid positive button" tabindex="5" [disabled]="form.invalid" data-content="Add users to your feed">Sign Up</button>
+            <button class="megabtn ui fluid positive button" tabindex="5" [disabled]="form.invalid"
+                    data-content="Add users to your feed">Sign Up
+            </button>
 
           </form>
 

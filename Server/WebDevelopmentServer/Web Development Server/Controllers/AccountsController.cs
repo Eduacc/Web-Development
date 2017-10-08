@@ -78,6 +78,8 @@ namespace Web_Development_Server.Controllers
             {
                 UserName = createUserModel.Username,
                 Email = createUserModel.Email,
+                EmailConfirmed = true,
+                PhoneNumber = createUserModel.Phone
             };
 
             IdentityResult addUserResult = await this.AppUserManager.CreateAsync(user, createUserModel.Password);
