@@ -30,7 +30,8 @@ namespace Web_Development_Server.Models
                 Email = appUser.Email,
                 EmailConfirmed = appUser.EmailConfirmed,
                 Roles = _AppUserManager.GetRolesAsync(appUser.Id).Result,
-                Claims = _AppUserManager.GetClaimsAsync(appUser.Id).Result
+                Claims = _AppUserManager.GetClaimsAsync(appUser.Id).Result,
+                Phone = appUser.PhoneNumber             
             };
         }
         public RoleReturnModel Create(IdentityRole appRole)
@@ -57,6 +58,7 @@ namespace Web_Development_Server.Models
         public string Id { get; set; }
         public string UserName { get; set; }
         public string Email { get; set; }
+        public string Phone { get; set; }
         public bool EmailConfirmed { get; set; }
         public IList<string> Roles { get; set; }
         public IList<System.Security.Claims.Claim> Claims { get; set; }
