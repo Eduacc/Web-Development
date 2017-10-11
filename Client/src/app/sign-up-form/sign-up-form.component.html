@@ -1,5 +1,18 @@
 <div class="main">
   <div class="ui centered grid">
+
+    <div class="row">
+      <div class="column">
+        <div *ngIf="isWarningVisible" class="ui warning message">
+          <i (click)="hideWarning()" class="close icon"></i>
+          <div class="header">
+            Something goes wrong!
+          </div>
+          <p *ngIf="warningText"> {{warningText}}</p>
+        </div>
+      </div>
+    </div>
+
     <div class="row">
       <div class="column">
         <div class="centered row">
@@ -7,7 +20,7 @@
 
           <form [formGroup]="form" (ngSubmit)="signUp(form.value)" class="ui form" novalidate>
             <div [class.error]="username.touched && username.dirty && username.invalid" class="field">
-              <label for="username">Username Checking...</label>
+              <label for="username">Username <span *ngIf="username.pending">Checking...</span></label>
               <input formControlName="username"
                      id="username"
                      type="text"
@@ -22,12 +35,12 @@
                 <span *ngIf="username.errors.pattern">
                   Username can contains only word characters i.e. a-Z or 0-9.
                 </span>
-                {{username.errors | json}}
+
+
                 <span *ngIf="username.errors.shouldBeUnique">
                   This username already exist.
                 </span>
               </div>
-
             </div>
 
             <div [class.error]="email.touched && email.dirty && email.invalid" class="field">
@@ -37,6 +50,9 @@
                      type="email"
                      tabindex="2">
               <div *ngIf="email.touched && email.dirty && email.invalid" class="ui pointing red basic label">
+                    <span *ngIf="email.errors.required">
+                  Email is required.
+                </span>
                 <span *ngIf="email.errors.pattern">
                   Incorrect email (example: username@domain.com).
                 </span>
@@ -50,6 +66,9 @@
                      type="tel"
                      tabindex="3">
               <div *ngIf="phone.touched && phone.dirty && phone.invalid" class="ui pointing red basic label">
+                <span *ngIf="phone.errors.required">
+                  Phone is required.
+                </span>
                 <span *ngIf="phone.errors.pattern">
                   Incorrect phone (example: 89054924121).
                 </span>
@@ -62,8 +81,10 @@
                      type="password"
                      tabindex="4">
               <div *ngIf="password.touched && password.dirty && password.invalid" class="ui pointing red basic label">
-
-              <span *ngIf="password.errors.minlength">
+                <span *ngIf="password.errors.required">
+                  Password is required.
+                </span>
+                <span *ngIf="password.errors.minlength">
                   Password should contains at least {{ password.errors.minlength.requiredLength }} symbols.
                 </span>
                 <span *ngIf="password.errors.pattern">
@@ -71,8 +92,7 @@
                 </span>
               </div>
             </div>
-            <button class="megabtn ui fluid positive button" tabindex="5" [disabled]="form.invalid"
-                    data-content="Add users to your feed">Sign Up
+            <button class="megabtn ui fluid positive button" tabindex="5" [disabled]="form.invalid">Sign Up
             </button>
 
           </form>
@@ -84,7 +104,7 @@
     <div class="row">
       <div class="ui centered grid">
         <div class="center aligned segment">
-          Already have one? <a href="" tabindex="6">Sign In here.</a>
+          Already have one? <a routerLink="/login" tabindex="6">Sign In here.</a>
         </div>
       </div>
     </div>

@@ -9,6 +9,18 @@ import { FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {AccountService} from './services/account/account.service';
 import {ApiService} from './services/api/api.service';
 import {HttpClientModule} from '@angular/common/http';
+import {RouterModule, Routes} from '@angular/router';
+import {AuthService} from './services/auth/auth.service';
+import {AuthGuard} from './auth-guards/auth.guard';
+import {IncognitoGuard} from './auth-guards/incognito.guard';
+
+const appRoutes: Routes = [
+  { path: 'login', component: SignInFormComponent, canActivate: [IncognitoGuard] },
+  { path: 'register', component: SignUpFormComponent, canActivate: [IncognitoGuard] },
+  { path: 'profile', component: ProfileComponent , canActivate: [AuthGuard]},
+  { path: '', redirectTo: '/profile', pathMatch: 'full', canActivate: [AuthGuard]},
+  { path: '**', redirectTo: '/profile', pathMatch: 'full'}
+];
 
 @NgModule({
   declarations: [
@@ -21,9 +33,13 @@ import {HttpClientModule} from '@angular/common/http';
     BrowserModule,
     FormsModule,
     ReactiveFormsModule,
-    HttpClientModule
+    HttpClientModule,
+    RouterModule.forRoot(
+      appRoutes,
+      {enableTracing : true}
+    )
   ],
-  providers: [ AccountService, ApiService],
+  providers: [ AccountService, ApiService, AuthService, AuthGuard, IncognitoGuard],
   bootstrap: [AppComponent]
 })
 

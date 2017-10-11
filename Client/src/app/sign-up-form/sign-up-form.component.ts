@@ -1,7 +1,10 @@
 import {Component, OnInit, ViewEncapsulation} from '@angular/core';
 import {FormGroup, FormControl, Validators} from '@angular/forms';
-import {UsernameValidators} from "../common/validators/username.validators";
-import {AccountService} from "../services/account/account.service";
+import {UsernameValidators} from '../common/validators/username.validators';
+import {AccountService} from '../services/account/account.service';
+import {AuthService} from "../services/auth/auth.service";
+import {Router} from "@angular/router";
+import {showWarningOnce} from "tslint/lib/error";
 
 @Component({
   selector: 'app-sign-up-form',
@@ -14,7 +17,8 @@ export class SignUpFormComponent implements OnInit {
       Validators.required,
       Validators.minLength(2),
       Validators.pattern('\\w+'),
-      // UsernameValidators.shouldBeUnique
+    ], [
+      UsernameValidators.shouldBeUnique
     ]),
     email: new FormControl('', [
       Validators.required,
@@ -31,7 +35,8 @@ export class SignUpFormComponent implements OnInit {
     ])
   });
 
-
+  warningText: string;
+  isWarningVisible: boolean;
 
   get username() {
     return this.form.get('username');
@@ -49,14 +54,40 @@ export class SignUpFormComponent implements OnInit {
     return this.form.get('password');
   }
 
-  constructor(private accountService: AccountService) {
+  constructor(private accountService: AccountService, private authService: AuthService, private router: Router) {
   }
 
   ngOnInit() {
+    this.hideWarning();
+  }
+
+
+
+  showWarning(text = null) {
+    this.warningText = text;
+    this.isWarningVisible = true;
+  }
+
+  hideWarning() {
+    this.isWarningVisible = false;
   }
 
   signUp(credentials) {
-    this.accountService.createUser(credentials);
+    this.accountService.createUser(credentials).subscribe(data => {
+      this.authService.login({username: credentials['username'], password: credentials['password']})
+        .subscribe(next => {
+            this.router.navigate(['/profile']);
+          },
+          error => {
+            this.router.navigate(['/login']);
+          });
+    }, error => {
+     // "{"message":"The request is invalid.","modelState":{"":["Name Admin is already taken."]}}"
+      const errorMessage = JSON.parse(error.error);
+      console.log(errorMessage);
+
+      this.showWarning(errorMessage.modelState[''][0]);
+    });
   }
 
 }

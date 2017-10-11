@@ -1,42 +1,20 @@
 import {Injectable} from '@angular/core';
 import {ApiService} from '../api/api.service';
-import {RequestOptions} from '@angular/http';
-import {Headers} from '@angular/http';
+import {AuthService} from "../auth/auth.service";
 
 
 @Injectable()
 export class AccountService {
 
-  constructor(private api: ApiService) {
+  constructor(private api: ApiService, private auth: AuthService) {
   }
 
   createUser(credentials) {
-    this.api.post('/api/accounts/create', credentials).subscribe((data) => {
-      console.log(data);
-      this.login(data['username'], credentials['password']);
-    }, (error) => {
-      console.log(error);
-    });
+    return this.api.post('/api/accounts/create', credentials);
   }
 
-  login(username: string, password: string) {
-
-    const body = new URLSearchParams();
-    body.set('username', username);
-    body.set('password', password);
-    body.set('grant_type', 'password');
-
-    this.api.owin('/oauth/token', body).subscribe((data) => {
-      localStorage.setItem('access_token', data['access_token']);
-    }, (error) => {
-      console.log(error);
-    });
+  getInfo() {
+    return this.api.getAuth('/api/accounts/user');
   }
-
-  logout() {
-    localStorage.removeItem('access_token');
-  }
-
-
 
 }
